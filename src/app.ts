@@ -1,8 +1,9 @@
-import fastify from "fastify";
-import { fastifyErrorHandler } from "./libs/fastify-error-handler";
+import fastify from 'fastify'
 
-const app = fastify();
+import { fastifyErrorHandler } from './libs/fastify-error-handler'
 
-app.setErrorHandler(fastifyErrorHandler);
+const app = fastify()
 
-export { app };
+app.setErrorHandler(fastifyErrorHandler)
+
+export { app }
