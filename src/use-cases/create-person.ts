@@ -1,10 +1,9 @@
-import { Cidade, Endereco, Estado, Perfil, Usuario } from '@prisma/client'
-
 import { AddressesRepository } from '@/repositories/addresses-repository'
 import { CitiesRepository } from '@/repositories/cities-repository'
 import { ProfilesRepository } from '@/repositories/profiles-repository'
 import { StatesRepository } from '@/repositories/states-repository'
 import { UsersRepository } from '@/repositories/users-repository'
+import { Pessoa } from '@/types/pessoa'
 import { calculateAge } from '@/utils/calculate-age'
 import { convertDateStringToDate } from '@/utils/convert-date-string-to-date'
 import { convertFloatStringToFloat } from '@/utils/convert-float-string-to-float'
@@ -38,13 +37,7 @@ interface CreatePersonUseCaseRequest {
 }
 
 interface CreatePersonUseCaseResponse {
-  person: {
-    user: Usuario
-    profile: Perfil
-    address: Endereco
-    city: Cidade
-    state: Estado
-  }
+  person: Pessoa
 }
 
 export class CreatePersonUseCase {
@@ -68,7 +61,6 @@ export class CreatePersonUseCase {
     email,
     endereco,
     estado,
-    idade,
     mae,
     nome,
     numero,
@@ -126,7 +118,7 @@ export class CreatePersonUseCase {
       })
     }
 
-    const address = await this.addressesRepository.create({
+    await this.addressesRepository.create({
       bairro,
       cep,
       numero,
@@ -135,14 +127,10 @@ export class CreatePersonUseCase {
       perfil_id: profile.id,
     })
 
+    const person = (await this.usersRepository.findById(user.id)) as Pessoa
+
     return {
-      person: {
-        user,
-        profile,
-        address,
-        city: cityAlreadyExists,
-        state: stateAlreadyExists,
-      },
+      person,
     }
   }
 }
