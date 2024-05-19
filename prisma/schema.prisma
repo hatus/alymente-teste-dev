@@ -29,7 +29,7 @@ model Perfil {
   id             Int      @id @default(autoincrement())
   nome           String
   idade          Int
-  cpf            String   @unique
+  cpf            String
   rg             String
   data_nasc      DateTime
   sexo           String
