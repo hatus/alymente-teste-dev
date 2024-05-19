@@ -9,7 +9,7 @@ import { calculateAge } from '@/utils/calculate-age'
 import { convertDateStringToDate } from '@/utils/convert-date-string-to-date'
 import { convertFloatStringToFloat } from '@/utils/convert-float-string-to-float'
 
-interface InsertPersonUseCaseRequest {
+interface CreatePersonUseCaseRequest {
   nome: string
   idade: number
   cpf: string
@@ -35,7 +35,7 @@ interface InsertPersonUseCaseRequest {
   cor: string
 }
 
-interface InsertPersonUseCaseResponse {
+interface CreatePersonUseCaseResponse {
   person: {
     user: Usuario
     profile: Perfil
@@ -45,7 +45,7 @@ interface InsertPersonUseCaseResponse {
   }
 }
 
-export class InsertPersonUseCase {
+export class CreatePersonUseCase {
   constructor(
     private usersRepository: UsersRepository,
     private profilesRepository: ProfilesRepository,
@@ -78,7 +78,7 @@ export class InsertPersonUseCase {
     signo,
     telefone_fixo,
     tipo_sanguineo,
-  }: InsertPersonUseCaseRequest): Promise<InsertPersonUseCaseResponse> {
+  }: CreatePersonUseCaseRequest): Promise<CreatePersonUseCaseResponse> {
     const userAlreadyExists = await this.usersRepository.findByEmail(email)
 
     if (userAlreadyExists) {
