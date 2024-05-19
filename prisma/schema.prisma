@@ -9,6 +9,89 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./database.db"
+}
+
+model Usuario {
+  id            Int      @id @default(autoincrement())
+  email         String   @unique
+  senha         String
+  criado_em     DateTime @default(now())
+  atualizado_em DateTime @default(now())
+
+  perfil Perfil?
+
+  @@map("usuarios")
+}
+
+model Perfil {
+  id             Int      @id @default(autoincrement())
+  nome           String
+  idade          Int
+  cpf            String   @unique
+  rg             String
+  data_nasc      DateTime
+  sexo           String
+  signo          String
+  mae            String
+  pai            String
+  telefone_fixo  String
+  celular        String
+  cor            String
+  tipo_sanguineo String
+  peso           Float
+  altura         Float
+  usuario_id     Int      @unique
+  criado_em      DateTime @default(now())
+  atualizado_em  DateTime @default(now())
+
+  usuario   Usuario    @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+  enderecos Endereco[]
+
+  @@map("perfis")
+}
+
+model Estado {
+  id            Int      @id @default(autoincrement())
+  sigla         String
+  criado_em     DateTime @default(now())
+  atualizado_em DateTime @default(now())
+
+  cidades Cidade[]
+
+  @@map("estados")
+}
+
+model Cidade {
+  id            Int      @id @default(autoincrement())
+  nome          String
+  estado_id     Int
+  criado_em     DateTime @default(now())
+  atualizado_em DateTime @default(now())
+
+  estado    Estado     @relation(fields: [estado_id], references: [id])
+  enderecos Endereco[]
+
+  // nome de cidade e estado são únicos
+  // para o caso de existir mais de um estado com nomes de cidades iguais
+  @@unique([nome, estado_id])
+  @@map("cidades")
+}
+
+model Endereco {
+  id            Int      @id @default(autoincrement())
+  logradouro    String
+  numero        Int
+  cep           String
+  bairro        String
+  cidade_id     Int
+  perfil_id     Int
+  criado_em     DateTime @default(now())
+  atualizado_em DateTime @default(now())
+
+  cidade Cidade @relation(fields: [cidade_id], references: [id])
+  perfil Perfil @relation(fields: [perfil_id], references: [id], onDelete: Cascade)
+
+  @@map("enderecos")
 }
