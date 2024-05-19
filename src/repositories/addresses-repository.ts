@@ -5,6 +5,6 @@ export interface AddressesRepository {
   findById(id: number): Promise<Endereco | null>
   update(
     id: number,
-    data: Prisma.EnderecoUpdateWithoutCidadeInput,
+    data: Prisma.EnderecoUncheckedUpdateInput,
   ): Promise<Endereco>
 }
