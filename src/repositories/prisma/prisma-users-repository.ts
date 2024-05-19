@@ -1,11 +1,22 @@
-import { Prisma } from '@prisma/client'
+import { Prisma, Usuario } from '@prisma/client'
 
 import { prisma } from '@/libs/prisma'
+import { Pessoa } from '@/types/pessoa'
 
 import { UsersRepository } from '../users-repository'
 
 export class PrismaUsersRepository implements UsersRepository {
-  async findByEmail(email: string) {
+  async create(data: Prisma.UsuarioCreateInput): Promise<Usuario> {
+    const user = await prisma.usuario.create({ data })
+
+    return user
+  }
+
+  async deleteById(id: number) {
+    await prisma.usuario.delete({ where: { id } })
+  }
+
+  async findByEmail(email: string): Promise<Usuario | null> {
     const user = await prisma.usuario.findUnique({
       where: { email },
     })
@@ -13,8 +24,8 @@ export class PrismaUsersRepository implements UsersRepository {
     return user
   }
 
-  async findAll() {
-    const users = await prisma.usuario.findMany({
+  async findAll(): Promise<Pessoa[]> {
+    const persons = (await prisma.usuario.findMany({
       include: {
         perfil: {
           include: {
@@ -30,38 +41,45 @@ export class PrismaUsersRepository implements UsersRepository {
           },
         },
       },
-    })
+    })) as Pessoa[]
 
-    return users
+    return persons
   }
 
-  async findById(id: number) {
-    const user = await prisma.usuario.findUnique({
-      where: { id },
-    })
-
-    return user
-  }
-
-  async create(data: Prisma.UsuarioCreateInput) {
-    const user = await prisma.usuario.create({ data })
-
-    return user
-  }
-
-  async update(
+  async findById(
     id: number,
-    { email, senha }: Prisma.UsuarioUpdateWithoutPerfilInput,
-  ) {
-    const user = await prisma.usuario.update({
-      data: { email, senha },
+    includeRelations: boolean = true,
+  ): Promise<Pessoa | null> {
+    const person = (await prisma.usuario.findUnique({
       where: { id },
+      include: includeRelations
+        ? {
+            perfil: {
+              include: {
+                enderecos: {
+                  include: {
+                    cidade: {
+                      include: {
+                        estado: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          }
+        : undefined,
+    })) as Pessoa
+
+    return person
+  }
+
+  async update(id: number, { senha }: Prisma.UsuarioUpdateInput) {
+    const user = await prisma.usuario.update({
+      where: { id },
+      data: { senha },
     })
 
     return user
-  }
-
-  async deleteById(id: number) {
-    await prisma.usuario.delete({ where: { id } })
   }
 }
