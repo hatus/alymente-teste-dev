@@ -13,7 +13,7 @@ export class PrismaProfilesRepository implements ProfilesRepository {
     return profile
   }
 
-  async create(data: Prisma.PerfilCreateInput) {
+  async create(data: Prisma.PerfilUncheckedCreateInput) {
     const profile = await prisma.perfil.create({ data })
 
     return profile

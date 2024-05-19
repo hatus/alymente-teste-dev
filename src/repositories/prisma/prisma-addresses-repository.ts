@@ -13,7 +13,7 @@ export class PrismaAddressesRepository implements AddressesRepository {
     return address
   }
 
-  async create(data: Prisma.EnderecoCreateInput) {
+  async create(data: Prisma.EnderecoUncheckedCreateInput) {
     const address = await prisma.endereco.create({ data })
 
     return address
