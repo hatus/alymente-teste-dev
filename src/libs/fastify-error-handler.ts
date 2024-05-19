@@ -1,11 +1,11 @@
-import { FastifyError, FastifyReply } from 'fastify'
+import { FastifyError, FastifyReply, FastifyRequest } from 'fastify'
 import { ZodError } from 'zod'
 
 import { env } from '@/env'
 
 export function fastifyErrorHandler(
   error: FastifyError,
-  _: any,
+  _: FastifyRequest,
   reply: FastifyReply,
 ) {
   if (error instanceof ZodError) {
