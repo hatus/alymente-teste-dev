@@ -9,6 +9,8 @@ import { calculateAge } from '@/utils/calculate-age'
 import { convertDateStringToDate } from '@/utils/convert-date-string-to-date'
 import { convertFloatStringToFloat } from '@/utils/convert-float-string-to-float'
 
+import { UserAlreadyExistsError } from './errors/user-already-exists'
+
 interface CreatePersonUseCaseRequest {
   nome: string
   idade: number
@@ -82,7 +84,7 @@ export class CreatePersonUseCase {
     const userAlreadyExists = await this.usersRepository.findByEmail(email)
 
     if (userAlreadyExists) {
-      throw new Error(`Usuário com email ${email} já existe.`)
+      throw new UserAlreadyExistsError()
     }
 
     const user = await this.usersRepository.create({ email, senha })
