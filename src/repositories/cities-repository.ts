@@ -12,8 +12,5 @@ export interface CitiesRepository {
     cityName,
     stateId,
   }: ICityNameAndStateId): Promise<Cidade | null>
-  update(
-    id: number,
-    data: Prisma.CidadeUpdateWithoutEstadoInput,
-  ): Promise<Cidade>
+  update(id: number, data: Prisma.CidadeUpdateInput): Promise<Cidade>
 }

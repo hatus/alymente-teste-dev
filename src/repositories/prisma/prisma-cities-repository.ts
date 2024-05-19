@@ -1,17 +1,17 @@
-import { Prisma } from '@prisma/client'
+import { Cidade, Prisma } from '@prisma/client'
 
 import { prisma } from '@/libs/prisma'
 
 import { CitiesRepository, ICityNameAndStateId } from '../cities-repository'
 
 export class PrismaCitiesRepository implements CitiesRepository {
-  async create(data: Prisma.CidadeUncheckedCreateInput) {
+  async create(data: Prisma.CidadeUncheckedCreateInput): Promise<Cidade> {
     const city = await prisma.cidade.create({ data })
 
     return city
   }
 
-  async findById(id: number) {
+  async findById(id: number): Promise<Cidade | null> {
     const city = await prisma.cidade.findUnique({
       where: { id },
     })
@@ -19,7 +19,10 @@ export class PrismaCitiesRepository implements CitiesRepository {
     return city
   }
 
-  async findByNameAndStateId({ cityName, stateId }: ICityNameAndStateId) {
+  async findByNameAndStateId({
+    cityName,
+    stateId,
+  }: ICityNameAndStateId): Promise<Cidade | null> {
     const city = await prisma.cidade.findFirst({
       include: { estado: true },
       where: { estado_id: stateId, nome: cityName },
@@ -28,9 +31,12 @@ export class PrismaCitiesRepository implements CitiesRepository {
     return city
   }
 
-  async update(id: number, data: Prisma.CidadeUpdateWithoutEstadoInput) {
+  async update(
+    id: number,
+    { nome }: Prisma.CidadeUpdateInput,
+  ): Promise<Cidade> {
     const city = await prisma.cidade.update({
-      data,
+      data: { nome },
       where: { id },
     })
 
