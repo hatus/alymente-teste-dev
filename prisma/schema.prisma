@@ -18,7 +18,7 @@ model Usuario {
   email         String   @unique
   senha         String
   criado_em     DateTime @default(now())
-  atualizado_em DateTime @default(now())
+  atualizado_em DateTime @updatedAt
 
   perfil Perfil?
 
@@ -44,7 +44,7 @@ model Perfil {
   altura         Float
   usuario_id     Int      @unique
   criado_em      DateTime @default(now())
-  atualizado_em  DateTime @default(now())
+  atualizado_em  DateTime @updatedAt
 
   usuario   Usuario    @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
   enderecos Endereco[]
@@ -56,7 +56,7 @@ model Estado {
   id            Int      @id @default(autoincrement())
   sigla         String
   criado_em     DateTime @default(now())
-  atualizado_em DateTime @default(now())
+  atualizado_em DateTime @updatedAt
 
   cidades Cidade[]
 
@@ -68,7 +68,7 @@ model Cidade {
   nome          String
   estado_id     Int
   criado_em     DateTime @default(now())
-  atualizado_em DateTime @default(now())
+  atualizado_em DateTime @updatedAt
 
   estado    Estado     @relation(fields: [estado_id], references: [id])
   enderecos Endereco[]
@@ -88,7 +88,7 @@ model Endereco {
   cidade_id     Int
   perfil_id     Int
   criado_em     DateTime @default(now())
-  atualizado_em DateTime @default(now())
+  atualizado_em DateTime @updatedAt
 
   cidade Cidade @relation(fields: [cidade_id], references: [id])
   perfil Perfil @relation(fields: [perfil_id], references: [id], onDelete: Cascade)
