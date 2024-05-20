@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
-import { z } from 'zod'
 
+import { createPersonBodySchema } from '@/http/validations/create-person-body-schema'
 import { UserAlreadyExistsError } from '@/use-cases/errors/user-already-exists'
 import { makeCreatePersonUseCase } from '@/use-cases/factories/make-create-person'
 
@@ -8,37 +8,13 @@ export async function createPersonController(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  const createPersonBodySchema = z.object({
-    nome: z.string(),
-    idade: z.coerce.number(),
-    cpf: z.string(),
-    rg: z.string(),
-    data_nasc: z.string(),
-    sexo: z.string(),
-    signo: z.string(),
-    mae: z.string(),
-    pai: z.string(),
-    email: z.string().email(),
-    senha: z.string(),
-    cep: z.string(),
-    endereco: z.string(),
-    numero: z.coerce.number(),
-    bairro: z.string(),
-    cidade: z.string(),
-    estado: z.string(),
-    telefone_fixo: z.string(),
-    celular: z.string(),
-    altura: z.string(),
-    peso: z.coerce.number(),
-    tipo_sanguineo: z.string(),
-    cor: z.string(),
-  })
-
   try {
     const createPersonBody = createPersonBodySchema.parse(request.body)
     const createPersonUseCase = makeCreatePersonUseCase()
 
-    const { person } = await createPersonUseCase.execute(createPersonBody)
+    const { person } = await createPersonUseCase.execute({
+      createPersonBody,
+    })
 
     return reply.status(201).send({ person })
   } catch (error) {

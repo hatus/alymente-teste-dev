@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
-import { z } from 'zod'
 
+import { getPersonParamsSchema } from '@/http/validations/get-person-params-schema'
 import { UserNotFoundError } from '@/use-cases/errors/user-not-found'
 import { makeGetPersonUseCase } from '@/use-cases/factories/make-get-person'
 
@@ -8,10 +8,6 @@ export async function getPersonController(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  const getPersonParamsSchema = z.object({
-    userId: z.coerce.number(),
-  })
-
   const { userId } = getPersonParamsSchema.parse(request.params)
 
   const getPersonUseCase = makeGetPersonUseCase()

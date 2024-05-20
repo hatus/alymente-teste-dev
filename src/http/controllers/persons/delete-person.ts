@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
-import { z } from 'zod'
 
+import { deletePersonParamsSchema } from '@/http/validations/delete-person-params-schema'
 import { UserNotFoundError } from '@/use-cases/errors/user-not-found'
 import { makeDeletePersonUseCase } from '@/use-cases/factories/make-delete-person'
 
@@ -8,10 +8,6 @@ export async function deletePersonController(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  const deletePersonParamsSchema = z.object({
-    userId: z.coerce.number(),
-  })
-
   const { userId } = deletePersonParamsSchema.parse(request.params)
 
   const deletePersonUseCase = makeDeletePersonUseCase()

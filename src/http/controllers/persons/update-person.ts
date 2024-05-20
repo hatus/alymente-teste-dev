@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
-import { z } from 'zod'
 
+import { updatePersonBodySchema } from '@/http/validations/update-person-body-schema'
+import { updatePersonParamsSchema } from '@/http/validations/update-person-params-schema'
 import { UserNotFoundError } from '@/use-cases/errors/user-not-found'
 import { makeUpdatePersonUseCase } from '@/use-cases/factories/make-update-person'
 
@@ -8,18 +9,15 @@ export async function updatePersonController(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  const updatePersonParamsSchema = z.object({
-    userId: z.coerce.number(),
-  })
-
   const { userId } = updatePersonParamsSchema.parse(request.params)
+  const updatePersonBody = updatePersonBodySchema.parse(request.body)
 
   const updatePersonUseCase = makeUpdatePersonUseCase()
 
   try {
     const { person } = await updatePersonUseCase.execute({
       userId,
-      data: request.body,
+      updatePersonBody,
     })
 
     return reply.status(200).send({ person })
