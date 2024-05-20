@@ -1,11 +1,11 @@
 import { promises as fs } from 'fs'
 
+import { CreatePersonBody } from '@/http/validations/create-person-body-schema'
 import { UploadedFile } from '@/types/multer-fastify'
-import { RawPerson } from '@/types/raw-person'
 
 export async function parseJsonFileToRawPersons(
   file: UploadedFile,
-): Promise<RawPerson[]> {
+): Promise<CreatePersonBody[]> {
   try {
     const data = await fs.readFile(file.path, 'utf8')
 
